@@ -70,9 +70,12 @@ def train_one_epoch(model, data, epoch, optimizer, scaler, scheduler, args, tb_w
         step = num_batches_per_epoch * epoch + i
         scheduler(step)
 
-        images, texts = batch
+        images, texts, hard_captions = batch
         images = images.to(device=device, non_blocking=True)
         texts = texts.to(device=device, non_blocking=True)
+        hard_captions = hard_captions.to(device=device, non_blocking=True)
+
+        texts = torch.cat([texts, hard_captions])
 
         data_time_m.update(time.time() - end)
         optimizer.zero_grad()
@@ -172,9 +175,12 @@ def evaluate(model, data, epoch, args, tb_writer=None):
         all_image_features, all_text_features = [], []
         with torch.no_grad():
             for i, batch in enumerate(dataloader):
-                images, texts = batch
+                images, texts, hard_captions = batch
                 images = images.to(device=device, non_blocking=True)
                 texts = texts.to(device=device, non_blocking=True)
+                hard_captions = hard_captions.to(device=device, non_blocking=True)
+
+                texts = torch.cat([texts, hard_captions])
 
                 with autocast():
                     image_features, text_features, logit_scale = model(images, texts)
