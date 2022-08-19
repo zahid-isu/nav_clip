@@ -116,6 +116,6 @@ class ClipLoss(nn.Module):
 
         total_loss = (
             F.cross_entropy(logits_per_image, labels) +
-            F.cross_entropy(logits_per_text, labels)
+            F.cross_entropy(logits_per_text[:len(logits_per_image)], labels)
             ) / 2
         return total_loss
