@@ -401,6 +401,7 @@ def get_csv_dataset(args, preprocess_fn, is_train, epoch=0):
         preprocess_fn,
         img_key=args.csv_img_key,
         caption_key=args.csv_caption_key,
+        hard_captions_key=args.csv_hard_captions_key,
         sep=args.csv_separator)
     num_samples = len(dataset)
     sampler = DistributedSampler(dataset) if args.distributed and is_train else None
