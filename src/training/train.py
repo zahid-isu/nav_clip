@@ -196,7 +196,7 @@ def evaluate(model, data, epoch, args, tb_writer=None):
                     labels = torch.arange(batch_size, device=device).long()
                     total_loss = (
                         F.cross_entropy(logits_per_image, labels) +
-                        F.cross_entropy(logits_per_text, labels)
+                        F.cross_entropy(logits_per_text[:len(logits_per_image)], labels)
                     ) / 2
 
                 cumulative_loss += total_loss * batch_size
@@ -246,7 +246,7 @@ def get_metrics(image_features, text_features, logit_scale):
     logits_per_image = (logit_scale * image_features @ text_features.t()).detach().cpu()
     logits_per_text = logits_per_image.t().detach().cpu()
 
-    logits = {"image_to_text": logits_per_image, "text_to_image": logits_per_text}
+    logits = {"image_to_text": logits_per_image, "text_to_image": logits_per_text[:len(logits_per_image)]}
     ground_truth = torch.arange(len(text_features)).view(-1, 1)
 
     for name, logit in logits.items():
