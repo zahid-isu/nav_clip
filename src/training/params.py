@@ -61,6 +61,12 @@ def parse_args():
         help="For csv-like datasets, the name of the key for the image paths."
     )
     parser.add_argument(
+        "--csv-hard-caption-key",
+        type=str,
+        default="neg_caption",
+        help="For csv-like datasets, the name of the key for the hard captions."
+    )
+    parser.add_argument(
         "--csv-caption-key",
         type=str,
         default="title",
