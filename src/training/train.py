@@ -186,11 +186,13 @@ def evaluate(model, data, epoch, args, tb_writer=None):
                     image_features, text_features, logit_scale = model(images, texts)
                     # features are accumulated in CPU tensors, otherwise GPU memory exhausted quickly
                     # however, system RAM is easily exceeded and compute time becomes problematic
-                    all_image_features.append(image_features.cpu())
-                    all_text_features.append(text_features.cpu())
+
                     logit_scale = logit_scale.mean()
                     logits_per_image = logit_scale * image_features @ text_features.t()
                     logits_per_text = logits_per_image.t()
+                    
+                    all_image_features.append(image_features.cpu())
+                    all_text_features.append(text_features[:len(logits_per_image)].cpu())
 
                     batch_size = images.shape[0]
                     labels = torch.arange(batch_size, device=device).long()
