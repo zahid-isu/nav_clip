@@ -127,7 +127,7 @@ def train_one_epoch(model, data, epoch, optimizer, scaler, scheduler, args, tb_w
                 f"Data (t): {data_time_m.avg:.3f} "
                 f"Batch (t): {batch_time_m.avg:.3f}, {args.batch_size*args.world_size / batch_time_m.val:#g}/s "
                 f"LR: {optimizer.param_groups[0]['lr']:5f} "
-                f"Logit Scale: {logit_scale_scalar:.3f}"
+                f"Logit Scale: {logit_scale_scalar:.3f} - V1"
             )
 
             # Save train loss / etc. Using non avg meter values as loggers have their own smoothing
