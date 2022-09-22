@@ -8,7 +8,8 @@ import sys
 import time
 from dataclasses import dataclass
 from multiprocessing import Value
-
+import ast
+import random
 import braceexpand
 import numpy as np
 import pandas as pd
@@ -32,7 +33,7 @@ from open_clip import tokenize
 class CsvDataset(Dataset):
     def __init__(self, input_filename, transforms, img_key, caption_key, hard_captions_key, sep="\t"):
         logging.debug(f'Loading csv data from {input_filename}.')
-        df = pd.read_csv(input_filename, sep=sep)
+        df = pd.read_csv(input_filename, sep=sep, converters={"neg_caption":ast.literal_eval})
 
         self.images = df[img_key].tolist()
         self.captions = df[caption_key].tolist()
@@ -46,7 +47,10 @@ class CsvDataset(Dataset):
     def __getitem__(self, idx):
         images = self.transforms(Image.open(str(self.images[idx])))
         texts = tokenize([str(self.captions[idx])])[0]
-        hard_captions = tokenize([str(self.hard_captions[idx])])[0]
+
+        chosen_caption = random.choice(self.hard_captions[idx])
+        hard_captions = tokenize([str(chosen_caption)])[0]
+
         return images, texts, hard_captions
 
 
