@@ -51,6 +51,9 @@ with autocast():
 **Loss**
 
 Finally, we have the loss. In the **Forward Pass** section we have built texts and images that have different `lenghts`.
+Basically starting from a batchsize of 256, you get to a contrastive matrix of 512x1024 (for the image part we have
+256 images + 256 hard images, for the text part we have 256 captions + 256 captions from the hard images + 256 hard captions + 256 hard captions from the hard images).
+
 So we need to change the loss a bit to ignore computing the loss on the wrong items (see the paper).
 
 ```python
