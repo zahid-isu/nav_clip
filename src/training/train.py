@@ -70,12 +70,22 @@ def train_one_epoch(model, data, epoch, optimizer, scaler, scheduler, args, tb_w
         step = num_batches_per_epoch * epoch + i
         scheduler(step)
 
-        images, texts, hard_captions = batch
-        images = images.to(device=device, non_blocking=True)
-        texts = texts.to(device=device, non_blocking=True)
-        hard_captions = hard_captions.to(device=device, non_blocking=True)
+        images, new_images, texts, new_texts, hard_captions, new_hard = batch
 
+        images = images.to(device=device, non_blocking=True)
+        new_images = new_images.to(device=device, non_blocking=True)
+
+        texts = texts.to(device=device, non_blocking=True)
+        new_texts = new_texts.to(device=device, non_blocking=True)
+
+        hard_captions = hard_captions.to(device=device, non_blocking=True)
+        new_hard = new_hard.to(device=device, non_blocking=True)
+
+        images = torch.cat([images, new_images])
+
+        texts = torch.cat([texts, new_texts])
         texts = torch.cat([texts, hard_captions])
+        texts = torch.cat([texts, new_hard])
 
         data_time_m.update(time.time() - end)
         optimizer.zero_grad()
@@ -127,7 +137,7 @@ def train_one_epoch(model, data, epoch, optimizer, scaler, scheduler, args, tb_w
                 f"Data (t): {data_time_m.avg:.3f} "
                 f"Batch (t): {batch_time_m.avg:.3f}, {args.batch_size*args.world_size / batch_time_m.val:#g}/s "
                 f"LR: {optimizer.param_groups[0]['lr']:5f} "
-                f"Logit Scale: {logit_scale_scalar:.3f} - V3"
+                f"Logit Scale: {logit_scale_scalar:.3f} - V4"
             )
 
             # Save train loss / etc. Using non avg meter values as loggers have their own smoothing
@@ -175,12 +185,22 @@ def evaluate(model, data, epoch, args, tb_writer=None):
         all_image_features, all_text_features = [], []
         with torch.no_grad():
             for i, batch in enumerate(dataloader):
-                images, texts, hard_captions = batch
-                images = images.to(device=device, non_blocking=True)
-                texts = texts.to(device=device, non_blocking=True)
-                hard_captions = hard_captions.to(device=device, non_blocking=True)
+                images, new_images, texts, new_texts, hard_captions, new_hard = batch
 
+                images = images.to(device=device, non_blocking=True)
+                new_images = new_images.to(device=device, non_blocking=True)
+
+                texts = texts.to(device=device, non_blocking=True)
+                new_texts = new_texts.to(device=device, non_blocking=True)
+
+                hard_captions = hard_captions.to(device=device, non_blocking=True)
+                new_hard = new_hard.to(device=device, non_blocking=True)
+
+                images = torch.cat([images, new_images])
+
+                texts = torch.cat([texts, new_texts])
                 texts = torch.cat([texts, hard_captions])
+                texts = torch.cat([texts, new_hard])
 
                 with autocast():
                     image_features, text_features, logit_scale = model(images, texts)

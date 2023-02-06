@@ -33,11 +33,12 @@ from open_clip import tokenize
 class CsvDataset(Dataset):
     def __init__(self, input_filename, transforms, img_key, caption_key, hard_captions_key, sep="\t"):
         logging.debug(f'Loading csv data from {input_filename}.')
-        df = pd.read_csv(input_filename, sep=sep, converters={"neg_caption":ast.literal_eval})
+        df = pd.read_csv(input_filename, sep=sep, converters={"neg_caption":ast.literal_eval, "neg_image":ast.literal_eval})
 
         self.images = df[img_key].tolist()
         self.captions = df[caption_key].tolist()
         self.hard_captions = df[hard_captions_key].tolist()
+        self.hard_images = df["neg_image"].tolist()
         self.transforms = transforms
         logging.debug('Done loading data.')
 
@@ -51,7 +52,16 @@ class CsvDataset(Dataset):
         chosen_caption = random.choice(self.hard_captions[idx])
         hard_captions = tokenize([str(chosen_caption)])[0]
 
-        return images, texts, hard_captions
+        chose_image_index = random.choice(self.hard_images[idx])
+
+        new_images = self.transforms(Image.open(str(self.images[chose_image_index])))
+        new_texts = tokenize([str(self.captions[chose_image_index])])[0]
+
+        chosen_caption = random.choice(self.hard_captions[chose_image_index])
+        new_hard = tokenize([str(chosen_caption)])[0]
+
+        return images, new_images, texts, new_texts, hard_captions, new_hard
+
 
 
 class SharedEpoch:
