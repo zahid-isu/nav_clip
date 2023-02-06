@@ -31,8 +31,8 @@ hard_captions = tokenize([str(chosen_caption)])[0]
 
 **Forward Pass**
 
-To reduce the number of edits we need to apply to the contrasive loss, we concatenate negative images and negative 
-captions together
+To reduce the number of edits we need to apply to the contrastive loss, we concatenate negative images and negative 
+captions together. Once this is done we will let the model run the forward pass on this data.
 
 ```python
 images = torch.cat([images, hard_images]) # we concatenate images and hard images
@@ -40,6 +40,12 @@ images = torch.cat([images, hard_images]) # we concatenate images and hard image
 texts = torch.cat([texts, texts_hard_images]) # we concatenate texts with the text of the hard images
 texts = torch.cat([texts, hard_captions]) # we concatenate text with the hard captions
 texts = torch.cat([texts, hard_captions_of_hard_images]) # we concatenate texts with the hard caption of the hard images
+
+# Note. This operation is going to leave us with different in sizes. We will have 2x texts than images (because of the hard negatives).
+# This will require us to fix how we compute the loss (see next section).
+
+with autocast():
+    image_features, text_features, logit_scale = model(images, texts)
 ```
 
 **Loss**
