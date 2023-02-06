@@ -185,22 +185,22 @@ def evaluate(model, data, epoch, args, tb_writer=None):
         all_image_features, all_text_features = [], []
         with torch.no_grad():
             for i, batch in enumerate(dataloader):
-                images, new_images, texts, new_texts, hard_captions, new_hard = batch
+                images, hard_images, texts, texts_hard_images, hard_captions, hard_captions_of_hard_images = batch
 
                 images = images.to(device=device, non_blocking=True)
-                new_images = new_images.to(device=device, non_blocking=True)
+                hard_images = hard_images.to(device=device, non_blocking=True)
 
                 texts = texts.to(device=device, non_blocking=True)
-                new_texts = new_texts.to(device=device, non_blocking=True)
+                texts_hard_images = texts_hard_images.to(device=device, non_blocking=True)
 
                 hard_captions = hard_captions.to(device=device, non_blocking=True)
-                new_hard = new_hard.to(device=device, non_blocking=True)
+                hard_captions_of_hard_images = hard_captions_of_hard_images.to(device=device, non_blocking=True)
 
-                images = torch.cat([images, new_images])
+                images = torch.cat([images, hard_images])
 
-                texts = torch.cat([texts, new_texts])
+                texts = torch.cat([texts, texts_hard_images])
                 texts = torch.cat([texts, hard_captions])
-                texts = torch.cat([texts, new_hard])
+                texts = torch.cat([texts, hard_captions_of_hard_images])
 
                 with autocast():
                     image_features, text_features, logit_scale = model(images, texts)

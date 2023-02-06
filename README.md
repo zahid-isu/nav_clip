@@ -1,4 +1,78 @@
-# OpenCLIP
+# When and why vision-language models behave like bags-of-words, and what to do about it? (ICLR 2023 Oral)
+
+**Note** This code will not work with the distributed/multi-gpu setting as it is currently implemented.
+
+## NegCLIP Implementation
+
+NegCLIP introduces a few simple edits to the original OpenCLIP base. To ease the code-reading phase, 
+I'll point out the main edits here:
+
+**Dataset**
+
+The dataset now requires loading hard captions (provided as a list) and hard image negatives. Hard captions and hard images
+are chosen at random at each epoch.
+
+```python
+        df = pd.read_csv(input_filename, sep=sep, converters={"neg_caption":ast.literal_eval, "neg_image":ast.literal_eval})
+
+        self.images = df[img_key].tolist()
+        self.captions = df[caption_key].tolist()
+        self.hard_captions = df[hard_captions_key].tolist()
+        self.hard_images = df["neg_image"].tolist()
+        self.transforms = transforms
+
+        [...]
+        
+        # example of random selection of an hard caption
+        chosen_caption = random.choice(self.hard_captions[idx])
+        hard_captions = tokenize([str(chosen_caption)])[0]
+```
+
+**Forward Pass**
+
+To reduce the number of edits we need to apply to the contrasive loss, we concatenate negative images and negative 
+captions together
+
+```python
+
+    images = torch.cat([images, hard_images]) # we concatenate images and hard images
+
+    texts = torch.cat([texts, texts_hard_images]) # we concatenate texts with the text of the hard images
+    texts = torch.cat([texts, hard_captions]) # we concatenate text with the hard captions
+    texts = torch.cat([texts, hard_captions_of_hard_images]) # we concatenate texts with the hard caption of the hard images
+```
+
+**Loss**
+
+Finally, we have the loss. In the **Forward Pass** section we have built texts and images that have different `lenghts`.
+So we need to change the loss a bit to ignore computing the loss on the wrong items (see the paper).
+
+```python
+ 
+    total_loss = (
+        F.cross_entropy(logits_per_image, labels) +
+        F.cross_entropy(logits_per_text[:len(logits_per_image)], labels)
+    ) / 2
+```
+
+
+# Citation
+If you use this code or data, please consider citing our paper:
+
+```
+@inproceedings{
+  yuksekgonul2023when,
+  title={When and why Vision-Language Models behave like  Bags-of-Words, and what to do about it?},
+  author={Mert Yuksekgonul and Federico Bianchi and Pratyusha   Kalluri and Dan Jurafsky and James Zou},
+  booktitle={International Conference on Learning Representations},
+  year={2023},
+  url={https://openreview.net/forum?id=KRLUvxh8uaX}
+}
+```
+
+What follows from here is the original OpenCLIP readme.
+
+# Original OpenCLIP
 
 [[Paper]](https://arxiv.org/abs/2109.01903) [[Colab]](https://colab.research.google.com/github/mlfoundations/open_clip/blob/master/docs/Interacting_with_open_clip.ipynb)
 
