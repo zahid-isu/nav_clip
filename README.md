@@ -8,7 +8,7 @@ NegCLIP introduces a few simple edits to the original OpenCLIP base. To ease the
 I'll point out the main edits here; if you are familiar with how OpenCLIP works this should be easy to read/edit and 
 modify.
 
-**Dataset**
+**Unity Dataset**
 
 The dataset now requires loading hard captions (provided as a list) and hard image negatives. Hard captions and hard images
 are chosen at random at each epoch.
