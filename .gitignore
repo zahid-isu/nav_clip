@@ -3,14 +3,23 @@ wandb/
 models/
 features/
 results/
+unity/images/
+unity/logs/
+unity/json/
+unity/models--facebook--flava-full/
 
 # Byte-compiled / optimized / DLL files
+unity/__pycache__/
 __pycache__/
 *.py[cod]
 *$py.class
 
 # C extensions
 *.so
+
+# model checkpoint files
+*.pth
+*.pt
 
 # Distribution / packaging
 .Python
