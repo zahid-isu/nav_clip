@@ -8,6 +8,7 @@ unity/images/
 unity/logs/
 unity/json/
 unity/models--facebook--flava-full/
+otw/
 
 # Byte-compiled / optimized / DLL files
 unity/__pycache__/
