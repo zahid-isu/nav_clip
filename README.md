@@ -1,4 +1,4 @@
-# SpacialCLIP (vision-language model with spacial awareness)
+# SpatialCLIP (vision-language model with spatial awareness)
 
 **Note** This code will not work with the distributed/multi-gpu setting as it is currently implemented.
 
