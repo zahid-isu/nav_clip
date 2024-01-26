@@ -1,0 +1,21 @@
+sp_relation,Accuracy,no_sample,Dataset,Model
+behind,0.17843388960205392,779,unity,openai-clip:ViT-B/32
+in front,0.5428937259923176,781,unity,openai-clip:ViT-B/32
+to the left,0.41457410142786805,4062,unity,openai-clip:ViT-B/32
+to the right,0.4854751354012802,4062,unity,openai-clip:ViT-B/32
+behind,0.41335044929396664,779,unity,blip-flickr-base
+in front,0.7925736235595391,781,unity,blip-flickr-base
+to the left,0.2818808468734613,4062,unity,blip-flickr-base
+to the right,0.23510585918266863,4062,unity,blip-flickr-base
+behind,0.45057766367137353,779,unity,blip-coco-base
+in front,0.7567221510883483,781,unity,blip-coco-base
+to the left,0.2616937469226982,4062,unity,blip-coco-base
+to the right,0.16838995568685378,4062,unity,blip-coco-base
+behind,0.6251604621309371,779,unity,laion-clip:ViT-B/32
+in front,0.9462227912932138,781,unity,laion-clip:ViT-B/32
+to the left,0.8340718857705564,4062,unity,laion-clip:ViT-B/32
+to the right,0.895371738060069,4062,unity,laion-clip:ViT-B/32
+behind,0.4980744544287548,779,unity,NegCLIP
+in front,0.6030729833546735,781,unity,NegCLIP
+to the left,0.4894140817331364,4062,unity,NegCLIP
+to the right,0.5790251107828656,4062,unity,NegCLIP
