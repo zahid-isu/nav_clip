@@ -1,6 +1,46 @@
-# When and why vision-language models behave like bags-of-words, and what to do about it? (ICLR 2023 Oral)
+# SpacialCLIP (vision-language model with spacial awareness)
 
 **Note** This code will not work with the distributed/multi-gpu setting as it is currently implemented.
+
+### Running on Unity data:
+
+#### Conda
+```bash
+# Create a conda environment (heavily recommended)
+conda create -n open_clip python=3.10
+conda activate open_clip
+```
+#### Other dependencies
+
+Install open_clip pacakge and remaining dependencies:
+
+```bash
+cd open_clip
+python setup.py install
+```
+
+If you want to train models, you will also need to install the packages
+from `requirements-training.txt`.
+
+
+### commandline for training:
+```bash
+CUDA_VISIBLE_DEVICES=0 python -m training.main \
+    --train-data="./unity/data/train.csv" \
+    --batch-size=256 \
+    --epochs=5 \
+    --lr=1e-6 \
+    --val-data="./unity/data/valid.csv" \
+    --logs="./logs/spCLIP/" \
+    --pretrained="openai" \
+    --model="ViT-B-32"\
+    --workers 14 \
+    --csv-separator=','\
+    --warmup 50\
+    --wandb-notes "ViT-B32_256_1e-6"\
+    --wandb-project-name "vlm-nav"\
+    --report-to "wandb"
+```
 
 ## NegCLIP Implementation
 
