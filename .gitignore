@@ -3,6 +3,7 @@ wandb/
 models/
 features/
 results/
+images/
 unity/images/
 unity/logs/
 unity/json/
